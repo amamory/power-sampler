@@ -1,4 +1,5 @@
 ## CMAKE Gitignore
+/build/sampler
 
 CMakeLists.txt.user
 CMakeCache.txt
