@@ -11,6 +11,9 @@
 #include <string.h>
 #include <unistd.h>
 
+extern "C" 
+{
+ 
 #include "periodic.h"
 #include "sensor_file.h"
 #include "sensor_hwmon.h"
@@ -21,7 +24,7 @@
 #ifndef UDEV_NOTFOUND
 #include "sensor_smartpower.h"
 #endif
-
+}
 // ROS2 related
 
 #ifdef _MSC_VER
@@ -36,11 +39,11 @@
 #include <iostream>
 #include <memory>
 
-#include "rclcpp/clock.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp/time_source.hpp"
+#include <rclcpp/clock.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <rclcpp/time_source.hpp>
 
-#include "std_msgs/msg/int32.hpp"
+#include <std_msgs/msg/u_int32.hpp>
 
 #define DEG2RAD M_PI / 180.0
 
@@ -80,7 +83,7 @@ void init_signal_action() {
     sigaction(SIGUSR1, &action_usr1, NULL);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
     //#############################################
     // ROS2 related init

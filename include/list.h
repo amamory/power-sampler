@@ -35,7 +35,7 @@ static inline void INIT_LIST_HEAD(struct list_head *list) {
     { NULL, NULL }
 
 static inline struct list_head *list_new() {
-    struct list_head *list = malloc(sizeof(struct list_head));
+    struct list_head *list = (struct list_head *)malloc(sizeof(struct list_head));
     if (list != NULL)
         INIT_LIST_HEAD(list);
     return list;
@@ -63,8 +63,8 @@ static inline void __list_add(struct list_head *new_elem,
  * Insert a new entry after the specified head.
  * This is good for implementing stacks.
  */
-static inline void list_add(struct list_head *new, struct list_head *head) {
-    __list_add(new, head, head->next);
+static inline void list_add(struct list_head *new_item, struct list_head *head) {
+    __list_add(new_item, head, head->next);
 }
 
 /**

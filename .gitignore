@@ -1,6 +1,10 @@
-## CMAKE Gitignore
-/build/sampler
 
+#cmake 
+build/**
+install/**
+log/**
+Kbuild
+build/*
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -11,9 +15,7 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
-_deps
-
-## C Gitignore
+_dep
 
 # Prerequisites
 *.d
@@ -67,3 +69,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+#cmake build
+**/build

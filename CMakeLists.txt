@@ -4,12 +4,15 @@
 cmake_minimum_required(VERSION 3.5)
 project(energy_sensors)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  #add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra)
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -22,32 +25,36 @@ find_package(std_msgs REQUIRED)
 #https://docs.ros2.org/latest/api/sensor_msgs/index-msg.html
 
 add_executable(energy_sensors 
-    src/main.cpp
-    src/periodic.c
-    src/sample_sensors.c
-    src/sensor_file.c
-    src/sensor_hwmon.c
-    src/sensor_iio.c
-    src/sensor_ina226.c
-    src/sensor_ina231.c
-    src/time_utils.c    
+${CMAKE_CURRENT_SOURCE_DIR}/src/periodic.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_file.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_hwmon.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_iio.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_ina226.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_ina231.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/time_utils.c    
+${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
+
+add_compile_definitions(UDEV_NOTFOUND)
 
 ament_target_dependencies(energy_sensors
   "rclcpp"
   "std_msgs"
 )
 
-include_directories("include" "include/private")
+target_include_directories(energy_sensors PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${CMAKE_CURRENT_SOURCE_DIR}/include/private
+)
 
 install(TARGETS
   energy_sensors
   DESTINATION lib/${PROJECT_NAME})
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
+# if(BUILD_TESTING)
+#   find_package(ament_lint_auto REQUIRED)
+#   ament_lint_auto_find_test_dependencies()
+# endif()
 
 
 # Flags
