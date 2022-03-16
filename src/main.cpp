@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     ts.attachClock(clock);
 
     //#############################################
-    // original initialization 
+    // original initialization  
     //#############################################
     LIST_HEAD(sensors_list);
 
