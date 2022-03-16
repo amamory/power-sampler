@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
 
     // Until the user sends a SIGINT
     while (keep_sampling && rclcpp::ok()) {
+    //for (int i =0; i < 200 ; i++){
         #ifndef DONT_PRINT
             if (mark_section) {
                 printf("--------------------------------------------\n\n");
@@ -177,10 +178,11 @@ int main(int argc, char *argv[]) {
         #endif 
 
         // publish into their respective topics
+        RCLCPP_INFO(node->get_logger(), "publishing ...");
         list_for_each_entry(pos, &sensors_list, list) {
             pos->publish(pos);
         }
-        
+
         // Wait next activation time
         //rt_next_period(&at, period_us);
 
@@ -200,6 +202,7 @@ int main(int argc, char *argv[]) {
     }
 
     rclcpp::shutdown();
+    RCLCPP_INFO(node->get_logger(), "closing node 'energy_sensors'");
 
     return 0;
 }
