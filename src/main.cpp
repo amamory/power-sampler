@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     // start w fixed value just to setup the initial compilation
     msg.data = 1;
 
-    RCLCPP_INFO(node->get_logger(), "starting node 'energy_sensors'");
+    RCLCPP_INFO(node->get_logger(), "starting node 123 'energy_sensors'");
 
     rclcpp::TimeSource ts(node);
     rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
