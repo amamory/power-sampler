@@ -15,17 +15,17 @@
 // =========================================================
 
 #define __SENSOR_IIO_BASE_INITIALIZER                                          \
-    { {}, -1, "", sensor_iio_read, sensor_iio_close, sensor_iio_print_last, }
+    { {}, -1, "", sensor_iio_read, sensor_iio_close, sensor_iio_print_last, sensor_iio_publish, }
 
 #define __SENSOR_IIO_INITIALIZER                                               \
-    { __SENSOR_IIO_BASE_INITIALIZER, "", "", "", 0, 0, 0, 0, }
+    { __SENSOR_IIO_BASE_INITIALIZER, "", "", "", 0, 0, 0, 0, NULL, NULL, NULL, }
 
 const struct sensor_iio SENSOR_IIO_INITIALIZER = __SENSOR_IIO_INITIALIZER;
 
 // ------------------ Private Methods ------------------- //
 
 struct sensor_iio *sensor_iio_new() {
-    struct sensor_iio *ptr = malloc(sizeof(struct sensor_iio));
+    struct sensor_iio *ptr = (struct sensor_iio *) malloc(sizeof(struct sensor_iio));
     if (ptr != NULL)
         *ptr = SENSOR_IIO_INITIALIZER;
     return ptr;
@@ -90,15 +90,12 @@ void sensor_iio_print_last(struct sensor *sself) {
     printf("%s %f\n", self->base.name, self->value);
 }
 
-//void sensor_iio_publish(struct sensor *sself) {
 void sensor_iio_publish(struct sensor *sself) {
     struct sensor_iio *self = (struct sensor_iio *)sself;
 
-    //std_msgs::msg::Double temp_msg;
-    self->msg.data = self->value;
-    //printf("%s %f\n", self->base.name, self->value);
-    self->pub->publish(temp_msg);
-    RCLCPP_INFO(self->node->get_logger(), "temp (C):\t%f", self->msg.data);
+    self->msg->data = self->value;
+    self->pub->publish(*(self->msg));
+    RCLCPP_INFO(self->node->get_logger(), "temp (C):\t%f", self->msg->data);
 }
 
 // =========================================================

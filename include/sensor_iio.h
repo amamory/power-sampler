@@ -5,13 +5,9 @@
 
 #include <rclcpp/rclcpp.hpp>
 // ROS message type used by this sensor
-#include <std_msgs/msg/u_int32.hpp>
+#include <std_msgs/msg/float64.hpp>
 
 struct sensor_iio {
-    // ROS related attributes
-    std_msgs::msg::Double msg;
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub;
-    rclcpp::Node::SharedPtr node;
     // original attributes
     struct sensor base;
     char fpath_offset[128]; // TODO: increase if necessary
@@ -21,6 +17,10 @@ struct sensor_iio {
     double scale;
     double raw;
     double value;
+    // ROS related attributes
+    std_msgs::msg::Float64::SharedPtr msg;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub;
+    rclcpp::Node::SharedPtr node;
 };
 
 // ---------------------- METHODS ----------------------- //

@@ -17,7 +17,6 @@ extern "C"
 //#include "periodic.h"
 #include "sensor_file.h"
 #include "sensor_hwmon.h"
-#include "sensor_iio.h"
 #include "sensor_ina226.h"
 #include "sensor_ina231.h"
 
@@ -25,6 +24,9 @@ extern "C"
 #include "sensor_smartpower.h"
 #endif
 }
+
+#include "sensor_iio.h"
+
 // ROS2 related
 
 #ifdef _MSC_VER
@@ -44,6 +46,8 @@ extern "C"
 #include <rclcpp/time_source.hpp>
 
 #include <std_msgs/msg/u_int32.hpp>
+// for the temperature topic
+#include <std_msgs/msg/float64.hpp>
 
 
 sig_atomic_t keep_sampling = 1;
@@ -91,10 +95,14 @@ int main(int argc, char *argv[]) {
     auto node = rclcpp::Node::make_shared("energy_sensors");
 
     auto current_pub = node->create_publisher<std_msgs::msg::UInt32>("current", 10);
+    auto temp_pub = node->create_publisher<std_msgs::msg::Float64>("temperature", 10);
 
     // TODO ROS: set the period from configuration files
     //rclcpp::WallRate loop_rate(30);
     rclcpp::WallRate loop_rate(1);
+
+    std_msgs::msg::Float64 temp_msg;
+    temp_msg.data = 12.345;
 
     std_msgs::msg::UInt32 msg;
     // start w fixed value just to setup the initial compilation
@@ -168,10 +176,16 @@ int main(int argc, char *argv[]) {
             fflush(stdout);
         #endif 
 
+        // publish into their respective topics
+        list_for_each_entry(pos, &sensors_list, list) {
+            pos->publish(pos);
+        }
+        
         // Wait next activation time
         //rt_next_period(&at, period_us);
 
         current_pub->publish(msg);
+        temp_pub->publish(temp_msg);
         rclcpp::spin_some(node);
         loop_rate.sleep();
     }

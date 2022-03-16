@@ -15,7 +15,7 @@
 #define __SENSOR_HWMON_BASE_INITIALIZER                                        \
     {                                                                          \
         {}, -1, "", sensor_hwmon_read, sensor_hwmon_close,                     \
-            sensor_hwmon_print_last,                                           \
+            sensor_hwmon_print_last, sensor_hwmon_publish,                     \
     }
 
 #define __SENSOR_HWMON_INITIALIZER                                             \
@@ -169,6 +169,10 @@ void sensor_hwmon_print_last(struct sensor *sself) {
     printf("hwmon_%s_uV %ld\n", NAME(self), VOLTAGE_uV(self));
     printf("hwmon_%s_uW %ld\n", NAME(self), POWER_uW(self));
     printf("hwmon_%s_mC %ld\n", NAME(self), TEMP_mC(self));
+}
+
+void sensor_hwmon_publish(struct sensor *sself __attribute((unused))) {
+  // TODO
 }
 
 // =========================================================

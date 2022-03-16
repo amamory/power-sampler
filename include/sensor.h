@@ -10,7 +10,7 @@ enum sample_type {
 #define METHOD(ret, name, ...) ret (*name)(__VA_ARGS__)
 
 #define __SENSOR_INITIALIZER                                                   \
-    { {}, -1, "", NULL, NULL, NULL }
+    { {}, -1, "", NULL, NULL, NULL, NULL }
 
 // TODO: standard sensor name
 struct sensor {
@@ -20,6 +20,7 @@ struct sensor {
     METHOD(int, read, struct sensor *self);
     METHOD(void, close, struct sensor *self);
     METHOD(void, print_last, struct sensor *self);
+    METHOD(void, publish, struct sensor *self);
 };
 
 #endif // SENSOR_H

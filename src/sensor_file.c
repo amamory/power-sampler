@@ -15,7 +15,7 @@
 // =========================================================
 
 #define __SENSOR_FILE_BASE_INITIALIZER                                         \
-    { {}, -1, "", sensor_file_read, sensor_file_close, sensor_file_print_last, }
+    { {}, -1, "", sensor_file_read, sensor_file_close, sensor_file_print_last, sensor_file_publish, }
 
 #define __SENSOR_FILE_INITIALIZER                                              \
     {                                                                          \
@@ -70,6 +70,10 @@ int sensor_file_read(struct sensor *sself) {
 void sensor_file_print_last(struct sensor *sself) {
     struct sensor_file *self = (struct sensor_file *)sself;
     printf("%s %s\n", self->base.name, self->data);
+}
+
+void sensor_file_publish(struct sensor *sself __attribute((unused))) {
+  // TODO
 }
 
 // =========================================================

@@ -12,7 +12,7 @@
 #define __SENSOR_INA226_BASE_INITIALIZER                                       \
     {                                                                          \
         {}, -1, "", sensor_ina226_read, sensor_ina226_close,                   \
-            sensor_ina226_print_last,                                          \
+            sensor_ina226_print_last, sensor_ina226_publish,                   \
     }
 
 #define __SENSOR_INA226_INITIALIZER                                            \
@@ -183,6 +183,10 @@ void sensor_ina226_print_last(struct sensor *sself) {
     // printf("%s_uV %ld\n", self->base.name, voltage_sum * 1000L);
     printf("%s_uW %ld\n", self->base.name, power_sum);
     printf("%s_CALC_uW %ld\n", self->base.name, power_calc_sum);
+}
+
+void sensor_ina226_publish(struct sensor *sself __attribute((unused))) {
+  // TODO
 }
 
 // =========================================================

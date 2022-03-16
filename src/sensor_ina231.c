@@ -13,7 +13,7 @@
 #define __SENSOR_INA231_BASE_INITIALIZER                                       \
     {                                                                          \
         {}, -1, "", sensor_ina231_read, sensor_ina231_close,                   \
-            sensor_ina231_print_last,                                          \
+            sensor_ina231_print_last, sensor_ina231_publish,                   \
     }
 
 #define __SENSOR_INA231_INITIALIZER                                            \
@@ -154,6 +154,10 @@ void sensor_ina231_print_last(struct sensor *sself) {
     printf("%s_uA %u\n", self->base.name, self->data.cur_uA);
     printf("%s_uV %u\n", self->base.name, self->data.cur_uV);
     printf("%s_uW %u\n", self->base.name, self->data.cur_uW);
+}
+
+void sensor_ina231_publish(struct sensor *sself __attribute((unused))) {
+  // TODO
 }
 
 // =========================================================

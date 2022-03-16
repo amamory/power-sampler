@@ -35,6 +35,9 @@ extern int sensor_hwmon_read(struct sensor *sself);
 // Print last data sample collected
 extern void sensor_hwmon_print_last(struct sensor *sself);
 
+// Publish last data sample collected into its ROS topic
+extern void sensor_hwmon_publish(struct sensor *sself);
+
 // ============ DETECTION AND INITIALIZATION ============ //
 
 extern struct list_head *sensors_hwmon_init();

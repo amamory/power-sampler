@@ -28,7 +28,7 @@ add_executable(energy_sensors
 ${CMAKE_CURRENT_SOURCE_DIR}/src/periodic.c
 ${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_file.c
 ${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_hwmon.c
-${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_iio.c
+${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_iio.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_ina226.c
 ${CMAKE_CURRENT_SOURCE_DIR}/src/sensor_ina231.c
 ${CMAKE_CURRENT_SOURCE_DIR}/src/time_utils.c    
