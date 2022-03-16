@@ -90,6 +90,17 @@ void sensor_iio_print_last(struct sensor *sself) {
     printf("%s %f\n", self->base.name, self->value);
 }
 
+//void sensor_iio_publish(struct sensor *sself) {
+void sensor_iio_publish(struct sensor *sself) {
+    struct sensor_iio *self = (struct sensor_iio *)sself;
+
+    //std_msgs::msg::Double temp_msg;
+    self->msg.data = self->value;
+    //printf("%s %f\n", self->base.name, self->value);
+    self->pub->publish(temp_msg);
+    RCLCPP_INFO(self->node->get_logger(), "temp (C):\t%f", self->msg.data);
+}
+
 // =========================================================
 // MULTIPLE SENSORS DETECTION AND INITIALIZATION
 // =========================================================

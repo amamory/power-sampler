@@ -13,8 +13,8 @@
 
 extern "C" 
 {
- 
-#include "periodic.h"
+// ROS has its own method to provide a periodic task
+//#include "periodic.h"
 #include "sensor_file.h"
 #include "sensor_hwmon.h"
 #include "sensor_iio.h"
@@ -45,17 +45,15 @@ extern "C"
 
 #include <std_msgs/msg/u_int32.hpp>
 
-#define DEG2RAD M_PI / 180.0
-
 
 sig_atomic_t keep_sampling = 1;
-sig_atomic_t mark_section = 0;
+//sig_atomic_t mark_section = 0;
 
-void mark(int signum __attribute((unused)),
-          siginfo_t *info __attribute((unused)),
-          void *ptr __attribute((unused))) {
-    mark_section = 1;
-}
+// void mark(int signum __attribute((unused)),
+//           siginfo_t *info __attribute((unused)),
+//           void *ptr __attribute((unused))) {
+//     mark_section = 1;
+// }
 
 void stop(int signum __attribute((unused)),
           siginfo_t *info __attribute((unused)),
@@ -65,22 +63,22 @@ void stop(int signum __attribute((unused)),
 
 void init_signal_action() {
     struct sigaction action_int;
-    struct sigaction action_usr1;
+    //struct sigaction action_usr1;
 
     memset(&action_int, 0, sizeof(action_int));
-    memset(&action_usr1, 0, sizeof(action_usr1));
+    //memset(&action_usr1, 0, sizeof(action_usr1));
 
     action_int.sa_sigaction = stop;
     action_int.sa_flags = SA_SIGINFO;
 
-    action_usr1.sa_sigaction = mark;
-    action_usr1.sa_flags = SA_SIGINFO;
+    // action_usr1.sa_sigaction = mark;
+    // action_usr1.sa_flags = SA_SIGINFO;
 
     sigaction(SIGINT, &action_int, NULL);
     sigaction(SIGTERM, &action_int, NULL);
     sigaction(SIGQUIT, &action_int, NULL);
 
-    sigaction(SIGUSR1, &action_usr1, NULL);
+    //sigaction(SIGUSR1, &action_usr1, NULL);
 }
 
 int main(int argc, char *argv[]) {
@@ -94,7 +92,9 @@ int main(int argc, char *argv[]) {
 
     auto current_pub = node->create_publisher<std_msgs::msg::UInt32>("current", 10);
 
-    rclcpp::WallRate loop_rate(30);
+    // TODO ROS: set the period from configuration files
+    //rclcpp::WallRate loop_rate(30);
+    rclcpp::WallRate loop_rate(1);
 
     std_msgs::msg::UInt32 msg;
     // start w fixed value just to setup the initial compilation
@@ -126,51 +126,60 @@ int main(int argc, char *argv[]) {
 
     // Select the minimum update period among them all
     struct sensor *pos;
-    long period_us = 50000L; // Maximum 20 times a second, in useconds
+    // TODO ROS: set the period from configuration files
+    //long period_us = 50000L; // Maximum 20 times a second, in useconds
+    //long period_us = 2000000L; // every 2 seconds, in useconds
 
-    list_for_each_entry(pos, &sensors_list, list) {
-        if (pos->period_us > 0 && pos->period_us < period_us)
-            period_us = pos->period_us;
-    }
+    // list_for_each_entry(pos, &sensors_list, list) {
+    //     if (pos->period_us > 0 && pos->period_us < period_us)
+    //         period_us = pos->period_us;
+    // }
 
-    printf("UPDATE_PERIOD_us %ld\n\n", period_us);
+    #ifndef DONT_PRINT
+        //printf("UPDATE_PERIOD_us %ld\n\n", period_us);
 
-    // Turn on full buffering for stdout, avoiding a flush each printline
-    fflush(stdout);
-    setvbuf(stdout, NULL, _IOFBF, 0);
+        // Turn on full buffering for stdout, avoiding a flush each printline
+        fflush(stdout);
+        setvbuf(stdout, NULL, _IOFBF, 0);
+    #endif
 
-    struct timespec at;
-    rt_start_period(&at);
+    // struct timespec at;
+    // rt_start_period(&at);
 
     // Until the user sends a SIGINT
     while (keep_sampling && rclcpp::ok()) {
-        if (mark_section) {
-            printf("--------------------------------------------\n\n");
-            mark_section = 0;
-        }
+        #ifndef DONT_PRINT
+            if (mark_section) {
+                printf("--------------------------------------------\n\n");
+                mark_section = 0;
+            }
+        #endif 
 
         // Read data from device and print it
         list_for_each_entry(pos, &sensors_list, list) {
             pos->read(pos);
         }
 
-        list_for_each_entry(pos, &sensors_list, list) {
-            pos->print_last(pos);
-        }
-
-        printf("\n");
-        fflush(stdout);
+        #ifndef DONT_PRINT
+            list_for_each_entry(pos, &sensors_list, list) {
+                pos->print_last(pos);
+            }
+            printf("\n");
+            fflush(stdout);
+        #endif 
 
         // Wait next activation time
-        rt_next_period(&at, period_us);
+        //rt_next_period(&at, period_us);
 
         current_pub->publish(msg);
         rclcpp::spin_some(node);
         loop_rate.sleep();
     }
 
+#ifndef DONT_PRINT
     // Re-enable full buffering for stdout
     setvbuf(stdout, NULL, _IOLBF, 0);
+#endif
 
     list_for_each_entry(pos, &sensors_list, list) {
         pos->close(pos);

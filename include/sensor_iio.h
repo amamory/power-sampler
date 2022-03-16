@@ -3,7 +3,16 @@
 
 #include "sensor.h"
 
+#include <rclcpp/rclcpp.hpp>
+// ROS message type used by this sensor
+#include <std_msgs/msg/u_int32.hpp>
+
 struct sensor_iio {
+    // ROS related attributes
+    std_msgs::msg::Double msg;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub;
+    rclcpp::Node::SharedPtr node;
+    // original attributes
     struct sensor base;
     char fpath_offset[128]; // TODO: increase if necessary
     char fpath_raw[128];    // TODO: increase if necessary
@@ -24,6 +33,9 @@ extern int sensor_iio_read(struct sensor *sself);
 
 // Print last data sample collected
 extern void sensor_iio_print_last(struct sensor *sself);
+
+// Publish last data sample collected into its ROS topic
+extern void sensor_iio_publish(struct sensor *sself);
 
 // ============ DETECTION AND INITIALIZATION ============ //
 

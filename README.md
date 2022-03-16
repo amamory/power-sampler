@@ -6,7 +6,7 @@ A simple application to sample some power data for embedded platforms
 
 reference node and its recipe
 
-https://github.com/ros2/demos/blob/master/dummy_robot/dummy_sensors/CMakeLists.txt
+https://github.com/ros2/demos/blob/mas-ter/dummy_robot/dummy_sensors/CMakeLists.txt
 https://github.com/ros/meta-ros/blob/master/meta-ros2-foxy/generated-recipes/demos/dummy-sensors_0.9.3-1.bb
 
 
@@ -49,3 +49,6 @@ https://github.com/ros/meta-ros/tree/master/meta-ros2-foxy/generated-recipes/rmw
 https://github.com/ros/meta-ros/tree/master/meta-ros2-foxy/generated-recipes/micro-ros-diagnostics
 https://github.com/ros/meta-ros/tree/master/meta-ros2-foxy/generated-recipes/micro-ros-msgs
 
+## Yocto
+
+https://wiki.yoctoproject.org/wiki/TipsAndTricks/Creating_Recipes_for_ROS_modules

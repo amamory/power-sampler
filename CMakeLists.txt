@@ -36,6 +36,8 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
 add_compile_definitions(UDEV_NOTFOUND)
+# will only publish data into the topics. no printing into stout
+add_compile_definitions(DONT_PRINT)
 
 ament_target_dependencies(energy_sensors
   "rclcpp"
