@@ -155,7 +155,8 @@ int main(int argc, char *argv[]) {
     // rt_start_period(&at);
 
     // Until the user sends a SIGINT
-    while (keep_sampling && rclcpp::ok()) {
+    //while (keep_sampling && rclcpp::ok()) {
+    while (rclcpp::ok()) {
     //for (int i =0; i < 200 ; i++){
         #ifndef DONT_PRINT
             if (mark_section) {
