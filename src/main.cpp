@@ -114,13 +114,17 @@ int main(int argc, char *argv[]) {
     rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
     ts.attachClock(clock);
 
+    RCLCPP_INFO(node->get_logger(), "starting node 1 'energy_sensors'");
+
     //#############################################
     // original initialization  
     //#############################################
     LIST_HEAD(sensors_list);
+    RCLCPP_INFO(node->get_logger(), "starting node 2 'energy_sensors'");
 
     // Register signal handlers
     init_signal_action();
+    RCLCPP_INFO(node->get_logger(), "starting node 3 'energy_sensors'");
 
     list_splice_free(sensors_file_init(), &sensors_list);
     list_splice_free(sensors_hwmon_init(), &sensors_list);
@@ -128,6 +132,7 @@ int main(int argc, char *argv[]) {
     list_splice_free(sensors_ina226_init(), &sensors_list);
     list_splice_free(sensors_ina231_init(), &sensors_list);
 
+    RCLCPP_INFO(node->get_logger(), "starting node 4 'energy_sensors'");
 #ifndef UDEV_NOTFOUND
     list_splice_free(sensors_smartpower_init(), &sensors_list);
 #endif
