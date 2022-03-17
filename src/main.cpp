@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
     while (rclcpp::ok()) {
         RCLCPP_INFO(node->get_logger(), "inside the loop ...");
     //for (int i =0; i < 200 ; i++){
-        // #ifndef DONT_PRINT
+        // #ifndef DONT_PRINT 
         //     if (mark_section) {
         //         printf("--------------------------------------------\n\n");
         //         mark_section = 0;

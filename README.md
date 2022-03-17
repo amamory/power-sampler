@@ -1,6 +1,10 @@
 # power-sampler
 A simple application to sample some power data for embedded platforms
 
+## INA readings
+
+https://github.com/jparkerh/xilinx-linux-power-utility/blob/master/src/ina_bm.cc
+
 
 ## initial ROS2-based version
 
