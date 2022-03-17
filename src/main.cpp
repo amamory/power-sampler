@@ -127,9 +127,13 @@ int main(int argc, char *argv[]) {
     RCLCPP_INFO(node->get_logger(), "starting node 3 'energy_sensors'");
 
     list_splice_free(sensors_file_init(), &sensors_list);
+    RCLCPP_INFO(node->get_logger(), "starting node 3.1 'energy_sensors'");
     list_splice_free(sensors_hwmon_init(), &sensors_list);
+    RCLCPP_INFO(node->get_logger(), "starting node 3.2 'energy_sensors'");
     list_splice_free(sensors_iio_init(), &sensors_list);
+    RCLCPP_INFO(node->get_logger(), "starting node 3.3 'energy_sensors'");
     list_splice_free(sensors_ina226_init(), &sensors_list);
+    RCLCPP_INFO(node->get_logger(), "starting node 3.4 'energy_sensors'");
     list_splice_free(sensors_ina231_init(), &sensors_list);
 
     RCLCPP_INFO(node->get_logger(), "starting node 4 'energy_sensors'");
