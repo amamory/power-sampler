@@ -1,6 +1,21 @@
 # power-sampler
 A simple application to sample some power data for embedded platforms
 
+## workflow
+
+http://trac.gateworks.com/wiki/Yocto/packages#PackageDevelopmentWorkflow
+
+### in the host 
+petalinux-build
+petalinux-build -c package-index
+
+### in the target
+
+dnf clean packages
+dnf remove energy-sensors
+dnf install energy-sensors
+
+
 ## INA readings
 
 https://github.com/jparkerh/xilinx-linux-power-utility/blob/master/src/ina_bm.cc
