@@ -156,14 +156,16 @@ int main(int argc, char *argv[]) {
 
     // Until the user sends a SIGINT
     //while (keep_sampling && rclcpp::ok()) {
+    RCLCPP_INFO(node->get_logger(), "outside the loop ...");
     while (rclcpp::ok()) {
+        RCLCPP_INFO(node->get_logger(), "inside the loop ...");
     //for (int i =0; i < 200 ; i++){
-        #ifndef DONT_PRINT
-            if (mark_section) {
-                printf("--------------------------------------------\n\n");
-                mark_section = 0;
-            }
-        #endif 
+        // #ifndef DONT_PRINT
+        //     if (mark_section) {
+        //         printf("--------------------------------------------\n\n");
+        //         mark_section = 0;
+        //     }
+        // #endif 
 
         // Read data from device and print it
         list_for_each_entry(pos, &sensors_list, list) {
@@ -202,8 +204,8 @@ int main(int argc, char *argv[]) {
         pos->close(pos);
     }
 
-    rclcpp::shutdown();
     RCLCPP_INFO(node->get_logger(), "closing node 'energy_sensors'");
+    rclcpp::shutdown();
 
     return 0;
 }
