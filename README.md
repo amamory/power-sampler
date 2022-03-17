@@ -5,7 +5,16 @@ A simple application to sample some power data for embedded platforms
 
 https://github.com/jparkerh/xilinx-linux-power-utility/blob/master/src/ina_bm.cc
 
+## cross-compile ROS2
 
+https://docs.ros.org/en/foxy/How-To-Guides/Cross-compilation.html   <== official 
+https://github.com/cyberbotics/epuck_ros2/tree/master/installation/cross_compile
+https://answers.ros.org/question/382582/what-is-the-correct-way-of-installing-ros2-foxy-on-a-raspberry-pi-zero/
+https://github.com/irobot-ros/ros2-cross-compilation
+https://github.com/ros2-for-arm/ros2/blob/master/aarch64_toolchainfile.cmake
+https://github.com/process1183/roomba-rpi/blob/master/docs/ros2_rpizw_build.md toolchain.cmkae
+https://hackmd.io/@st9540808/S1VpB3-cB?type=view
+ 
 ## initial ROS2-based version
 
 reference node and its recipe
