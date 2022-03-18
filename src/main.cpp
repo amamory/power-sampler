@@ -176,10 +176,12 @@ int main(int argc, char *argv[]) {
         //     }
         // #endif 
 
+        RCLCPP_INFO(node->get_logger(), "reading sensors ...");
         // Read data from device and print it
         list_for_each_entry(pos, &sensors_list, list) {
             pos->read(pos);
         }
+        RCLCPP_INFO(node->get_logger(), "sensors read");
 
         #ifndef DONT_PRINT
             list_for_each_entry(pos, &sensors_list, list) {
@@ -189,12 +191,19 @@ int main(int argc, char *argv[]) {
             fflush(stdout);
         #endif 
 
-        // publish into their respective topics
-        RCLCPP_INFO(node->get_logger(), "reading sensors ...");
-        list_for_each_entry(pos, &sensors_list, list) {
-            pos->publish(pos);
-        }
-        RCLCPP_INFO(node->get_logger(), "sensors read");
+
+        RCLCPP_INFO(node->get_logger(), "about to publish");
+        current_pub->publish(msg);
+        RCLCPP_INFO(node->get_logger(), "current published");
+        temp_pub->publish(temp_msg);
+        RCLCPP_INFO(node->get_logger(), "temp published");
+
+        // // publish into their respective topics
+        // RCLCPP_INFO(node->get_logger(), "publishing all sensors again ...");
+        // list_for_each_entry(pos, &sensors_list, list) {
+        //     pos->publish(pos);
+        // }
+        // RCLCPP_INFO(node->get_logger(), "sensors published");
 
         // Wait next activation time
         //rt_next_period(&at, period_us);
