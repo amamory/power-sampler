@@ -190,18 +190,24 @@ int main(int argc, char *argv[]) {
         #endif 
 
         // publish into their respective topics
-        RCLCPP_INFO(node->get_logger(), "publishing ...");
+        RCLCPP_INFO(node->get_logger(), "reading sensors ...");
         list_for_each_entry(pos, &sensors_list, list) {
             pos->publish(pos);
         }
+        RCLCPP_INFO(node->get_logger(), "sensors read");
 
         // Wait next activation time
         //rt_next_period(&at, period_us);
 
         current_pub->publish(msg);
+        RCLCPP_INFO(node->get_logger(), "current published");
         temp_pub->publish(temp_msg);
+        RCLCPP_INFO(node->get_logger(), "temp published");
         rclcpp::spin_some(node);
+
+        RCLCPP_INFO(node->get_logger(), "loop end - before sleep");
         loop_rate.sleep();
+        RCLCPP_INFO(node->get_logger(), "loop end - before sleep");
     }
 
 #ifndef DONT_PRINT
