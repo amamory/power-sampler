@@ -18,9 +18,9 @@ struct sensor_iio {
     double raw;
     double value;
     // ROS related attributes
-    std_msgs::msg::Float64::SharedPtr msg;
+    std_msgs::msg::Float64 msg;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub;
-    rclcpp::Node::SharedPtr node;
+    //rclcpp::Node::SharedPtr node;
 };
 
 // ---------------------- METHODS ----------------------- //

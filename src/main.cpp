@@ -47,7 +47,7 @@ extern "C"
 
 #include <std_msgs/msg/u_int32.hpp>
 // for the temperature topic
-#include <std_msgs/msg/float64.hpp>
+//#include <std_msgs/msg/float64.hpp>
 
 
 sig_atomic_t keep_sampling = 1;
@@ -85,6 +85,8 @@ void init_signal_action() {
     //sigaction(SIGUSR1, &action_usr1, NULL);
 }
 
+rclcpp::Node::SharedPtr node = NULL;
+
 int main(int argc, char *argv[]) {
 
     //#############################################
@@ -92,17 +94,17 @@ int main(int argc, char *argv[]) {
     //#############################################
     rclcpp::init(argc, argv);
 
-    auto node = rclcpp::Node::make_shared("energy_sensors");
+    node = rclcpp::Node::make_shared("energy_sensors");
 
     auto current_pub = node->create_publisher<std_msgs::msg::UInt32>("current", 10);
-    auto temp_pub = node->create_publisher<std_msgs::msg::Float64>("temperature", 10);
+    //auto temp_pub = node->create_publisher<std_msgs::msg::Float64>("temperature", 10);
 
     // TODO ROS: set the period from configuration files
     //rclcpp::WallRate loop_rate(30);
     rclcpp::WallRate loop_rate(1);
 
-    std_msgs::msg::Float64 temp_msg;
-    temp_msg.data = 12.345;
+    // std_msgs::msg::Float64 temp_msg;
+    // temp_msg.data = 12.345;
 
     std_msgs::msg::UInt32 msg;
     // start w fixed value just to setup the initial compilation
@@ -126,15 +128,24 @@ int main(int argc, char *argv[]) {
     init_signal_action();
     RCLCPP_INFO(node->get_logger(), "starting node 3 'energy_sensors'");
 
-    list_splice_free(sensors_file_init(), &sensors_list);
-    RCLCPP_INFO(node->get_logger(), "starting node 3.1 'energy_sensors'");
-    list_splice_free(sensors_hwmon_init(), &sensors_list);
+    struct sensor *pos;
+
+    // pass the ROS node pointer to the sensors
+    // list_for_each_entry(pos, &sensors_list, list) {
+    //     pos->node = node->get_node_base_interface() ;
+    // }
+
+    // the ROS topics are also setup in theirs respective init functions
+    // both the publisher and the messages are created here
+    // list_splice_free(sensors_file_init(), &sensors_list);
+    // RCLCPP_INFO(node->get_logger(), "starting node 3.1 'energy_sensors'");
+    // list_splice_free(sensors_hwmon_init(), &sensors_list);
     RCLCPP_INFO(node->get_logger(), "starting node 3.2 'energy_sensors'");
     list_splice_free(sensors_iio_init(), &sensors_list);
-    RCLCPP_INFO(node->get_logger(), "starting node 3.3 'energy_sensors'");
-    list_splice_free(sensors_ina226_init(), &sensors_list);
-    RCLCPP_INFO(node->get_logger(), "starting node 3.4 -+*! 'energy_sensors'");
-    list_splice_free(sensors_ina231_init(), &sensors_list);
+    // RCLCPP_INFO(node->get_logger(), "starting node 3.3 'energy_sensors'");
+    // list_splice_free(sensors_ina226_init(), &sensors_list);
+    // RCLCPP_INFO(node->get_logger(), "starting node 3.4 -+*! 'energy_sensors'");
+    // list_splice_free(sensors_ina231_init(), &sensors_list);
 
     RCLCPP_INFO(node->get_logger(), "starting node 4 'energy_sensors'");
 #ifndef UDEV_NOTFOUND
@@ -142,7 +153,6 @@ int main(int argc, char *argv[]) {
 #endif
 
     // Select the minimum update period among them all
-    struct sensor *pos;
     // TODO ROS: set the period from configuration files
     //long period_us = 50000L; // Maximum 20 times a second, in useconds
     //long period_us = 2000000L; // every 2 seconds, in useconds
@@ -164,10 +174,10 @@ int main(int argc, char *argv[]) {
     // rt_start_period(&at);
 
     // Until the user sends a SIGINT
-    //while (keep_sampling && rclcpp::ok()) {
     RCLCPP_INFO(node->get_logger(), "outside the loop ...");
-    while (rclcpp::ok()) {
-        RCLCPP_INFO(node->get_logger(), "inside the loop ...");
+    while (keep_sampling && rclcpp::ok()) {
+    //while (rclcpp::ok()) {
+        //RCLCPP_INFO(node->get_logger(), "inside the loop ...");
     //for (int i =0; i < 200 ; i++){
         // #ifndef DONT_PRINT 
         //     if (mark_section) {
@@ -181,7 +191,7 @@ int main(int argc, char *argv[]) {
         list_for_each_entry(pos, &sensors_list, list) {
             pos->read(pos);
         }
-        RCLCPP_INFO(node->get_logger(), "sensors read");
+        //RCLCPP_INFO(node->get_logger(), "sensors read");
 
         #ifndef DONT_PRINT
             list_for_each_entry(pos, &sensors_list, list) {
@@ -192,31 +202,31 @@ int main(int argc, char *argv[]) {
         #endif 
 
 
-        RCLCPP_INFO(node->get_logger(), "about to publish");
-        current_pub->publish(msg);
-        RCLCPP_INFO(node->get_logger(), "current published");
-        temp_pub->publish(temp_msg);
-        RCLCPP_INFO(node->get_logger(), "temp published");
+        // RCLCPP_INFO(node->get_logger(), "about to publish");
+        // current_pub->publish(msg);
+        // RCLCPP_INFO(node->get_logger(), "current published");
+        // temp_pub->publish(temp_msg);
+        // RCLCPP_INFO(node->get_logger(), "temp published");
 
         // // publish into their respective topics
-        // RCLCPP_INFO(node->get_logger(), "publishing all sensors again ...");
-        // list_for_each_entry(pos, &sensors_list, list) {
-        //     pos->publish(pos);
-        // }
-        // RCLCPP_INFO(node->get_logger(), "sensors published");
+        RCLCPP_INFO(node->get_logger(), "publishing all sensors again ...");
+        list_for_each_entry(pos, &sensors_list, list) {
+            pos->publish(pos);
+        }
+        RCLCPP_INFO(node->get_logger(), "sensors published");
 
         // Wait next activation time
         //rt_next_period(&at, period_us);
 
-        current_pub->publish(msg);
-        RCLCPP_INFO(node->get_logger(), "current published");
-        temp_pub->publish(temp_msg);
-        RCLCPP_INFO(node->get_logger(), "temp published");
+        // current_pub->publish(msg);
+        // RCLCPP_INFO(node->get_logger(), "current published");
+        // temp_pub->publish(temp_msg);
+        // RCLCPP_INFO(node->get_logger(), "temp published");
         rclcpp::spin_some(node);
 
-        RCLCPP_INFO(node->get_logger(), "loop end - before sleep");
+        //RCLCPP_INFO(node->get_logger(), "loop end - before sleep");
         loop_rate.sleep();
-        RCLCPP_INFO(node->get_logger(), "loop end - before sleep");
+        //RCLCPP_INFO(node->get_logger(), "loop end - before sleep");
     }
 
 #ifndef DONT_PRINT

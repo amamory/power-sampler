@@ -14,11 +14,14 @@
 // SINGLE SENSOR
 // =========================================================
 
+extern rclcpp::Node::SharedPtr node;
+
 #define __SENSOR_IIO_BASE_INITIALIZER                                          \
     { {}, -1, "", sensor_iio_read, sensor_iio_close, sensor_iio_print_last, sensor_iio_publish, }
 
+// TODO: the ros msg field initialization creates a warning. have to find a better way to initialize this field
 #define __SENSOR_IIO_INITIALIZER                                               \
-    { __SENSOR_IIO_BASE_INITIALIZER, "", "", "", 0, 0, 0, 0, NULL, NULL, NULL, }
+    { __SENSOR_IIO_BASE_INITIALIZER, "", "", "", 0, 0, 0, 0, {}, NULL, }
 
 const struct sensor_iio SENSOR_IIO_INITIALIZER = __SENSOR_IIO_INITIALIZER;
 
@@ -26,8 +29,9 @@ const struct sensor_iio SENSOR_IIO_INITIALIZER = __SENSOR_IIO_INITIALIZER;
 
 struct sensor_iio *sensor_iio_new() {
     struct sensor_iio *ptr = (struct sensor_iio *) malloc(sizeof(struct sensor_iio));
-    if (ptr != NULL)
+    if (ptr != NULL){
         *ptr = SENSOR_IIO_INITIALIZER;
+    }
     return ptr;
 }
 
@@ -41,6 +45,17 @@ int sensor_iio_open_single(char *dest, const char *fpath, size_t dest_size) {
         return -1;
 
     return 0;
+}
+
+// setup the sensor topic and msg
+void sensor_iio_ros_init(struct sensor_iio *self){
+    if (node == NULL){
+        printf("ERROR: have to set the attribute `node` before calling init() for %s\n", self->base.name);
+        exit(-1);
+    }
+    //self->msg = new(std_msgs::msg::Float64);
+    printf("ROS init \n");
+    self->pub = node->create_publisher<std_msgs::msg::Float64>("temperature", 10);
 }
 
 int sensor_iio_open(struct sensor_iio *self, const char *name,
@@ -93,9 +108,11 @@ void sensor_iio_print_last(struct sensor *sself) {
 void sensor_iio_publish(struct sensor *sself) {
     struct sensor_iio *self = (struct sensor_iio *)sself;
 
-    self->msg->data = self->value;
-    self->pub->publish(*(self->msg));
-    RCLCPP_INFO(self->node->get_logger(), "temp (C):\t%f", self->msg->data);
+    printf("PUB methodd\n");
+    RCLCPP_INFO(node->get_logger(), "temp1 (C):\t%f", self->msg.data);
+    self->msg.data = self->value;
+    self->pub->publish(self->msg);
+    RCLCPP_INFO(node->get_logger(), "temp (C):\t%f", self->msg.data);
 }
 
 // =========================================================
@@ -113,6 +130,9 @@ struct list_head *sensors_iio_init() {
 
     int res = sensor_iio_open(s, DEV_NAME_IIO_TEMP, DEV_PATH_IIO_TEMP_OFFSET,
                               DEV_PATH_IIO_TEMP_SCALE, DEV_PATH_IIO_TEMP_RAW);
+
+    sensor_iio_ros_init(s);
+
     if (res < 0)
         free(s);
     else
