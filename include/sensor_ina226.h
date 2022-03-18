@@ -3,6 +3,10 @@
 
 #include "sensor.h"
 
+#include <rclcpp/rclcpp.hpp>
+// ROS message type used by this sensor
+#include <std_msgs/msg/float64.hpp>
+
 struct ina226_measure {
     char in_path[64];
     char out_path[64];
@@ -23,6 +27,9 @@ struct ina226_data {
 struct sensor_ina226 {
     struct sensor base;
     struct list_head data_list;
+    // ROS related attributes
+    std_msgs::msg::Float64 msg;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub;
 };
 
 // ---------------------- METHODS ----------------------- //

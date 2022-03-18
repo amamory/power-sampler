@@ -17,7 +17,6 @@ extern "C"
 //#include "periodic.h"
 #include "sensor_file.h"
 #include "sensor_hwmon.h"
-#include "sensor_ina226.h"
 #include "sensor_ina231.h"
 
 #ifndef UDEV_NOTFOUND
@@ -26,6 +25,7 @@ extern "C"
 }
 
 #include "sensor_iio.h"
+#include "sensor_ina226.h"
 
 // ROS2 related
 
@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
     // list_splice_free(sensors_hwmon_init(), &sensors_list);
     RCLCPP_INFO(node->get_logger(), "starting node 3.2 'energy_sensors'");
     list_splice_free(sensors_iio_init(), &sensors_list);
-    // RCLCPP_INFO(node->get_logger(), "starting node 3.3 'energy_sensors'");
-    // list_splice_free(sensors_ina226_init(), &sensors_list);
+    RCLCPP_INFO(node->get_logger(), "starting node 3.3 'energy_sensors'");
+    list_splice_free(sensors_ina226_init(), &sensors_list);
     // RCLCPP_INFO(node->get_logger(), "starting node 3.4 -+*! 'energy_sensors'");
     // list_splice_free(sensors_ina231_init(), &sensors_list);
 

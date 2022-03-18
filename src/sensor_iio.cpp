@@ -47,14 +47,13 @@ int sensor_iio_open_single(char *dest, const char *fpath, size_t dest_size) {
     return 0;
 }
 
-// setup the sensor topic and msg
+// setup the sensor topic
 void sensor_iio_ros_init(struct sensor_iio *self){
     if (node == NULL){
         printf("ERROR: have to set the attribute `node` before calling init() for %s\n", self->base.name);
         exit(-1);
     }
     //self->msg = new(std_msgs::msg::Float64);
-    printf("ROS init \n");
     self->pub = node->create_publisher<std_msgs::msg::Float64>("temperature", 10);
 }
 
@@ -108,8 +107,6 @@ void sensor_iio_print_last(struct sensor *sself) {
 void sensor_iio_publish(struct sensor *sself) {
     struct sensor_iio *self = (struct sensor_iio *)sself;
 
-    printf("PUB methodd\n");
-    RCLCPP_INFO(node->get_logger(), "temp1 (C):\t%f", self->msg.data);
     self->msg.data = self->value;
     self->pub->publish(self->msg);
     RCLCPP_INFO(node->get_logger(), "temp (C):\t%f", self->msg.data);
