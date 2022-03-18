@@ -22,6 +22,8 @@ https://github.com/jparkerh/xilinx-linux-power-utility/blob/master/src/ina_bm.cc
 
 ## cross-compile ROS2
 
+https://embeddeduse.com/2017/06/03/cmake-cross-compilation-based-on-yocto-sdk/
+
 https://docs.ros.org/en/foxy/How-To-Guides/Cross-compilation.html   <== official 
 https://github.com/cyberbotics/epuck_ros2/tree/master/installation/cross_compile
 https://answers.ros.org/question/382582/what-is-the-correct-way-of-installing-ros2-foxy-on-a-raspberry-pi-zero/
