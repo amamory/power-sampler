@@ -19,7 +19,7 @@ extern rclcpp::Node::SharedPtr node;
 
 #define __SENSOR_INA226_INITIALIZER                                            \
     {                                                                          \
-        __SENSOR_INA226_BASE_INITIALIZER, {}, {}, NULL                         \
+        __SENSOR_INA226_BASE_INITIALIZER,  {}, {}, NULL ,                      \
     }
 
 const struct sensor_ina226 SENSOR_INA226_INITIALIZER =
@@ -138,15 +138,21 @@ void sensor_ina226_ros_init(struct sensor_ina226 *self){
         printf("ERROR: have to set the attribute `node` before calling init() for %s\n", self->base.name);
         exit(-1);
     }
+    //printf("creating topic 'power_rail_list'\n");
+    RCLCPP_INFO(node->get_logger(), "creating topic 'power_rail_list'");
     self->pub = node->create_publisher<std_msgs::msg::Float64>("power_rail_list", 10);
+    RCLCPP_INFO(node->get_logger(), "topic 'power_rail_list' created");
+    //printf("topic 'power_rail_list' created\n");
 }
 
 // ------------------- Public Methods ------------------- //
 
 struct sensor_ina226 *sensor_ina226_new() {
     struct sensor_ina226 *ptr = (struct sensor_ina226 *) malloc(sizeof(struct sensor_ina226));
-    if (ptr != NULL)
-        *ptr = SENSOR_INA226_INITIALIZER;
+    RCLCPP_INFO(node->get_logger(), "new init %d ", sizeof(struct sensor_ina226));
+    //if (ptr != NULL)
+    //    *ptr = SENSOR_INA226_INITIALIZER;
+    RCLCPP_INFO(node->get_logger(), "list head");
     INIT_LIST_HEAD(&ptr->data_list);
     return ptr;
 }
@@ -227,15 +233,22 @@ void sensor_ina226_publish(struct sensor *sself __attribute((unused))) {
 // =========================================================
 
 struct list_head *sensors_ina226_init() {
+    RCLCPP_INFO(node->get_logger(), "entrei init");
+    
     struct list_head *list = list_new();
     if (list == NULL)
         exit(EXIT_FAILURE);
+    RCLCPP_INFO(node->get_logger(), "entrei2 init");
 
     struct sensor_ina226 *s = sensor_ina226_new();
+    RCLCPP_INFO(node->get_logger(), "entrei3 init");
     sensor_ina226_getlist(&s->data_list);
+    RCLCPP_INFO(node->get_logger(), "entrei4 init");
     strcpy(s->base.name, "sensor_ina226");
 
+    RCLCPP_INFO(node->get_logger(), "antes ros init");
     sensor_ina226_ros_init(s);
+    RCLCPP_INFO(node->get_logger(), "deopis ros init");
 
     if (list_empty(&s->data_list)) {
         free(s);
