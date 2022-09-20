@@ -86,7 +86,7 @@ int main() {
     //printf("UPDATE_PERIOD_us %ld\n\n", period_us);
 
     // used just finish the CSV header line
-    printf("\n");
+    printf("total_power\n");
 
     // Turn on full buffering for stdout, avoiding a flush each printline
     fflush(stdout);
