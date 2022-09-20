@@ -83,7 +83,7 @@ int main() {
             period_us = pos->period_us;
     }
 
-    printf("UPDATE_PERIOD_us %ld\n\n", period_us);
+    //printf("UPDATE_PERIOD_us %ld\n\n", period_us);
 
     // write the CSV header
     list_for_each_entry(pos, &sensors_list, list) {

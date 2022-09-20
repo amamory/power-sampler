@@ -226,7 +226,14 @@ struct list_head *sensors_ina226_init() {
     struct ina226_data *data;
     list_for_each_entry(data, &s->data_list, list) {
         if (data->rail == VCCINT || data->rail == VCCBRAM || data->rail == VCCPSPLL || data->rail == VCCPSDDR || data->rail == VCCPSDDRPLL){
-            printf("%s,", data->linename);
+            // convert the linename into railname
+            // struct string_pair *data_names;
+            for(int i=0; i<PL_MAX; ++i) {
+                if (strcmp(data->linename, ina226_lines[i].linename) == 0){
+                    printf("%s,", ina226_lines[i].railname);
+                }
+            }
+            // printf("%s,", data->linename);
         }        
     }
 

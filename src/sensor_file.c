@@ -114,6 +114,9 @@ struct list_head *sensors_file_multi_init(int howmany, const char *name_prefix,
 
         sprintf(name + name_pointer, "%d", i);
 
+        // print the sensor name to form the CSV header
+        printf("%s,", name);
+
         suffix_pointer = sprintf(fpath + fpath_pointer, "%d", i);
         strcpy(fpath + fpath_pointer + suffix_pointer, fpath_suffix);
 
