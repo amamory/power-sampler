@@ -69,7 +69,9 @@ int sensor_file_read(struct sensor *sself) {
 
 void sensor_file_print_last(struct sensor *sself) {
     struct sensor_file *self = (struct sensor_file *)sself;
-    printf("%s %s\n", self->base.name, self->data);
+    // changing to print it in CSV format
+    // printf("%s %s\n", self->base.name, self->data);
+    printf("%s,", self->data);
 }
 
 // =========================================================

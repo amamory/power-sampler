@@ -162,7 +162,10 @@ int sensor_ina226_read(struct sensor *sself) {
 
     return 0;
 }
-
+/*
+this function has been modified to print data in a CSV format
+by Amory
+*/
 void sensor_ina226_print_last(struct sensor *sself) {
     struct sensor_ina226 *self = (struct sensor_ina226 *)sself;
 
@@ -170,19 +173,34 @@ void sensor_ina226_print_last(struct sensor *sself) {
     long current_sum __attribute((unused)) = 0;
     long voltage_sum __attribute((unused)) = 0;
     long power_sum = 0;
-    long power_calc_sum = 0;
+    // long power_calc_sum = 0;
 
+    // this is used to get the board total power, including the power rails that are not the focus
     list_for_each_entry(data, &self->data_list, list) {
         // current_sum += data->current.diff_value;
         // voltage_sum += data->voltage.diff_value;
         power_sum += data->power.diff_value;
-        power_calc_sum += data->current.diff_value * data->voltage.diff_value;
+        // power_calc_sum += data->current.diff_value * data->voltage.diff_value;
+    }
+
+    /* print only the power lines of interest, which are:
+        VCCINT - the main power line for the PL part. includes LUTs, DSPs, clocks, 
+        VCCBRAM - PL BRAM power line
+        VCCPSPLL - the main power line for the PS part
+        VCCPSDDR and VCCPSDDRPLL - the main power line for the DRAM    
+    */
+    list_for_each_entry(data, &self->data_list, list) {
+        if (data->rail == VCCINT || data->rail == VCCBRAM || data->rail == VCCPSPLL || data->rail == VCCPSDDR || data->rail == VCCPSDDRPLL){
+            printf("%ld,", data->current.diff_value * data->voltage.diff_value);
+        }
+        // power_calc_sum += data->current.diff_value * data->voltage.diff_value;
     }
 
     // printf("%s_uA %ld\n", self->base.name, current_sum * 1000L);
     // printf("%s_uV %ld\n", self->base.name, voltage_sum * 1000L);
-    printf("%s_uW %ld\n", self->base.name, power_sum);
-    printf("%s_CALC_uW %ld\n", self->base.name, power_calc_sum);
+    // printf("%s_uW %ld\n", self->base.name, power_sum);
+    // printf("%s_CALC_uW %ld\n", self->base.name, power_calc_sum);
+    printf("%ld,", power_sum);
 }
 
 // =========================================================

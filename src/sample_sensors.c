@@ -64,6 +64,7 @@ int main() {
     init_signal_action();
 
     list_splice_free(sensors_file_init(), &sensors_list);
+    // OBS: uncomment this line if you want to dump all the power lines
     //list_splice_free(sensors_hwmon_init(), &sensors_list);
     //list_splice_free(sensors_iio_init(), &sensors_list);
     list_splice_free(sensors_ina226_init(), &sensors_list);
@@ -83,6 +84,12 @@ int main() {
     }
 
     printf("UPDATE_PERIOD_us %ld\n\n", period_us);
+
+    // write the CSV header
+    list_for_each_entry(pos, &sensors_list, list) {
+        printf("%s,", pos->name);
+    }
+    printf("\n");
 
     // Turn on full buffering for stdout, avoiding a flush each printline
     fflush(stdout);
