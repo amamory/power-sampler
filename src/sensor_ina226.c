@@ -75,7 +75,7 @@ static inline void sensor_ina226_getlist(struct list_head *list) {
         if (buffer[res - 1] == '\n')
             buffer[res - 1] = '\0';
 
-        for (int i = PS_MIN; i < PS_MAX; ++i) {
+        for (int i = PS_MIN; i < PL_MAX; ++i) {
             // Skip VCC for ARM debug subsystem
             if (i == VCCOPS || i == VCCOPS3)
                 continue;

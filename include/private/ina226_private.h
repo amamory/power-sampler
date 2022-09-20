@@ -40,6 +40,22 @@ struct string_pair {
     char linename[16];
 };
 
+/*
+This is an AMPERE specific comment:
+for the rt-dag evaluation on zcu102 board, these are the most relevant power lines:
+
+VCCINT - the main power line for the PL part. includes LUTs, DSPs, clocks, 
+VCCBRAM - PL BRAM power line
+VCCPSPLL - the main power line for the PS part
+VCCPSDDR and VCCPSDDRPLL - the main power line for the DRAM
+
+Source:
+ - UG1137 Zynq UltraScale+ MPSoC Software Developer Guide
+  (v2019.1) June 26, 2019
+    - Chapter 11: Power Management Framework
+    - Figure 11-2: Zynq UltraScale+ MPSoC Power Domain and Islands
+*/
+
 const struct string_pair ina226_lines[] = {
     // PS Lines
     {"VCCPSINTFP", "ina226_u76"},

@@ -64,10 +64,10 @@ int main() {
     init_signal_action();
 
     list_splice_free(sensors_file_init(), &sensors_list);
-    list_splice_free(sensors_hwmon_init(), &sensors_list);
-    list_splice_free(sensors_iio_init(), &sensors_list);
+    //list_splice_free(sensors_hwmon_init(), &sensors_list);
+    //list_splice_free(sensors_iio_init(), &sensors_list);
     list_splice_free(sensors_ina226_init(), &sensors_list);
-    list_splice_free(sensors_ina231_init(), &sensors_list);
+    //list_splice_free(sensors_ina231_init(), &sensors_list);
 
 #ifndef UDEV_NOTFOUND
     list_splice_free(sensors_smartpower_init(), &sensors_list);
