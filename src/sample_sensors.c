@@ -87,8 +87,17 @@ int main() {
 
     // write the CSV header
     list_for_each_entry(pos, &sensors_list, list) {
+        if (strcmp(pos->name,"sensor_ina226")!=0){
         printf("%s,", pos->name);
+        }else{
+            struct ina226_data *data;
+            struct sensor_ina226 *self = (struct sensor_ina226 *)pos;
+            list_for_each_entry(data, &self->data_list, list) {
+                printf("%s,", data->linename);
+            }    
+        }
     }
+    // used just to write the CSV header line
     printf("\n");
 
     // Turn on full buffering for stdout, avoiding a flush each printline

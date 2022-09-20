@@ -221,6 +221,11 @@ struct list_head *sensors_ina226_init() {
     } else {
         list_add(&s->base.list, list);
     }
+    // // used just to write the CSV header line
+    // struct ina226_data *data;
+    // list_for_each_entry(data, &s->data_list, list) {
+    //     printf("%s,", data->linename);
+    // }
 
     return list;
 }
