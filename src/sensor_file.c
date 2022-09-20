@@ -163,11 +163,13 @@ struct list_head *sensors_file_init() {
     }
     free(tail);
 
+    /* for AMPERE and rt-dag, the temperature is not important
     tail = sensors_file_thermal_init();
     if (!list_empty(tail)) {
         list_splice_tail(tail, list);
     }
     free(tail);
+    */
 
     struct sensor_file *s = sensor_file_new();
     if (s == NULL)
