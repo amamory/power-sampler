@@ -31,14 +31,15 @@ static inline void set_file_if_exists(char *dest, const char *fname_base,
     strcpy(dest, fname_base);
     strcpy(dest + fname_base_len, fname_suffix);
 
-    fprintf(stderr, "DEBUG: EXISTS? %s\n", dest);
+    //fprintf(stderr, "DEBUG: EXISTS? %s\n", dest);
 
     // If file does not exist, do not set the file name
     if (access(dest, F_OK) != 0) {
         dest[0] = '\0';
-    } else {
-        fprintf(stderr, "DEBUG: EXISTS? TRUE\n");
-    }
+    } 
+    // else {
+    //     fprintf(stderr, "DEBUG: EXISTS? TRUE\n");
+    // }
 }
 
 static inline void sensor_ina226_getlist(struct list_head *list) {
@@ -52,7 +53,7 @@ static inline void sensor_ina226_getlist(struct list_head *list) {
 
     dir = opendir(HWMON_DIR);
 
-    fprintf(stderr, "DEBUG: !\n");
+    //fprintf(stderr, "DEBUG: !\n");
 
     while ((dirent = readdir(dir)) != NULL) {
         if (strcmp(".", dirent->d_name) == 0 ||
@@ -65,7 +66,7 @@ static inline void sensor_ina226_getlist(struct list_head *list) {
         strcpy(fname_buff + HWMON_BASE_IDX, dirent->d_name);
         strcpy(fname_buff + HWMON_BASE_IDX + name_len, HWMON_NAME);
 
-        fprintf(stderr, "DEBUG: FNAME: %s\n", fname_buff);
+        //fprintf(stderr, "DEBUG: FNAME: %s\n", fname_buff);
 
         int res = readfile(fname_buff, buffer, sizeof(buffer) - 1);
         if (res < 1)
@@ -80,11 +81,11 @@ static inline void sensor_ina226_getlist(struct list_head *list) {
             if (i == VCCOPS || i == VCCOPS3)
                 continue;
 
-            fprintf(stderr, "DEBUG: CMP: %s %s\n", buffer,
-                    ina226_lines[i].linename);
+            //fprintf(stderr, "DEBUG: CMP: %s %s\n", buffer,
+            //        ina226_lines[i].linename);
             if (strcmp(buffer, ina226_lines[i].linename) == 0) {
                 // The current directory represents a valid directory for the PS
-                fprintf(stderr, "DEBUG: CMP TRUE!\n");
+                //fprintf(stderr, "DEBUG: CMP TRUE!\n");
 
                 // Get back original directory name
                 fname_buff[HWMON_BASE_IDX + name_len] = '\0';
@@ -222,10 +223,12 @@ struct list_head *sensors_ina226_init() {
         list_add(&s->base.list, list);
     }
     // // used just to write the CSV header line
-    // struct ina226_data *data;
-    // list_for_each_entry(data, &s->data_list, list) {
-    //     printf("%s,", data->linename);
-    // }
+    struct ina226_data *data;
+    list_for_each_entry(data, &s->data_list, list) {
+        if (data->rail == VCCINT || data->rail == VCCBRAM || data->rail == VCCPSPLL || data->rail == VCCPSDDR || data->rail == VCCPSDDRPLL){
+            printf("%s,", data->linename);
+        }        
+    }
 
     return list;
 }

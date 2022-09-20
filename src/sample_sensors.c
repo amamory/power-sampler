@@ -89,13 +89,18 @@ int main() {
     list_for_each_entry(pos, &sensors_list, list) {
         if (strcmp(pos->name,"sensor_ina226")!=0){
         printf("%s,", pos->name);
-        }else{
-            struct ina226_data *data;
-            struct sensor_ina226 *self = (struct sensor_ina226 *)pos;
-            list_for_each_entry(data, &self->data_list, list) {
-                printf("%s,", data->linename);
-            }    
         }
+        // else{
+        //     struct ina226_data *data;
+        //     struct sensor_ina226 *self = (struct sensor_ina226 *)pos;
+        //     list_for_each_entry(data, &self->data_list, list) {
+        //     if (data->rail == VCCINT || data->rail == VCCBRAM || data->rail == VCCPSPLL || data->rail == VCCPSDDR || data->rail == VCCPSDDRPLL){
+        //         printf("%ld,", data->current.diff_value * data->voltage.diff_value);
+        //     }
+
+        //         printf("%s,", data->linename);
+        //     }    
+        // }
     }
     // used just to write the CSV header line
     printf("\n");
