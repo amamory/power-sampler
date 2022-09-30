@@ -173,15 +173,25 @@ void sensor_ina226_print_last(struct sensor *sself) {
     struct ina226_data *data;
     long current_sum __attribute((unused)) = 0;
     long voltage_sum __attribute((unused)) = 0;
-    long power_sum = 0;
+    long ps_power_sum = 0;
+    long pl_power_sum = 0;
     // long power_calc_sum = 0;
 
-    // this is used to get the board total power, including the power rails that are not the focus
+    // this is used to get the board total power, dividing it by PS and PL power
     list_for_each_entry(data, &self->data_list, list) {
         // current_sum += data->current.diff_value;
         // voltage_sum += data->voltage.diff_value;
-        power_sum += data->power.diff_value;
+        //power += data->power.diff_value;
         // power_calc_sum += data->current.diff_value * data->voltage.diff_value;
+
+        if (data->rail >= PS_MIN && data->rail <= PS_MAX){
+            ps_power_sum += data->power.diff_value;
+        }else if(data->rail >= PL_MIN && data->rail <= PL_MAX){
+            pl_power_sum += data->power.diff_value;
+        }else{
+            printf("ERROR: invalid sensor rail id %d\n", data->rail);
+            exit(1);
+        }
     }
 
     /* print only the power lines of interest, which are:
@@ -190,18 +200,21 @@ void sensor_ina226_print_last(struct sensor *sself) {
         VCCPSPLL - the main power line for the PS part
         VCCPSDDR and VCCPSDDRPLL - the main power line for the DRAM    
     */
+   // uncomment this code to print only selected columns of the CSV
+   /*
     list_for_each_entry(data, &self->data_list, list) {
         if (data->rail == VCCINT || data->rail == VCCBRAM || data->rail == VCCPSPLL || data->rail == VCCPSDDR || data->rail == VCCPSDDRPLL){
             printf("%ld,", data->current.diff_value * data->voltage.diff_value);
         }
         // power_calc_sum += data->current.diff_value * data->voltage.diff_value;
     }
+    */
 
     // printf("%s_uA %ld\n", self->base.name, current_sum * 1000L);
     // printf("%s_uV %ld\n", self->base.name, voltage_sum * 1000L);
     // printf("%s_uW %ld\n", self->base.name, power_sum);
     // printf("%s_CALC_uW %ld\n", self->base.name, power_calc_sum);
-    printf("%ld,", power_sum);
+    printf("%ld,%ld,%ld,", ps_power_sum, pl_power_sum, ps_power_sum + pl_power_sum);
 }
 
 // =========================================================
@@ -224,6 +237,8 @@ struct list_head *sensors_ina226_init() {
     }
     // // used just to write the CSV header line
     struct ina226_data *data;
+    // uncomment this code if you want to print only few columns in the CSV
+    /*
     list_for_each_entry(data, &s->data_list, list) {
         if (data->rail == VCCINT || data->rail == VCCBRAM || data->rail == VCCPSPLL || data->rail == VCCPSDDR || data->rail == VCCPSDDRPLL){
             // convert the linename into railname
@@ -236,6 +251,17 @@ struct list_head *sensors_ina226_init() {
             // printf("%s,", data->linename);
         }        
     }
+    */
+    list_for_each_entry(data, &s->data_list, list) {
+        for(int i=0; i<PL_MAX; ++i) {
+            if (strcmp(data->linename, ina226_lines[i].linename) == 0){
+                printf("%s,", ina226_lines[i].railname);
+            }
+        }
+    }
+    //PS power: from VCCPSINTFP to VCCPSDDRPLL, == PS_MIN to PS_MAX
+    //PL power: from     VCCINT to MGTAVTT, == PL_MIN to PL_MAX
+    printf("total_ps_power, total_pl_power,\n");
 
     return list;
 }
