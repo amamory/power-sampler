@@ -175,22 +175,23 @@ void sensor_ina226_print_last(struct sensor *sself) {
     long voltage_sum __attribute((unused)) = 0;
     long ps_power_sum = 0;
     long pl_power_sum = 0;
-    // long power_calc_sum = 0;
 
     // this is used to get the board total power, dividing it by PS and PL power
+    // the loops are duplicated such that the rail columns are nicely grouped, i.e, 1st all PS rails and then all the PL rails
     list_for_each_entry(data, &self->data_list, list) {
-        // current_sum += data->current.diff_value;
-        // voltage_sum += data->voltage.diff_value;
-        // power_calc_sum += data->current.diff_value * data->voltage.diff_value;
-
-        printf("%ld,", data->power.diff_value);
-        if (data->rail >= PS_MIN && data->rail <= PS_MAX){
-            ps_power_sum += data->power.diff_value;
-        }else if(data->rail >= PL_MIN && data->rail <= PL_MAX){
-            pl_power_sum += data->power.diff_value;
-        }else{
-            printf("ERROR: invalid sensor rail id %d\n", data->rail);
-            exit(1);
+        for(int i=PS_MIN; i<PS_MAX; ++i) {
+            if (strcmp(data->linename, ina226_lines[i].linename) == 0){
+                printf("%ld,", data->power.diff_value);
+                ps_power_sum += data->power.diff_value;
+            }
+        }
+    }
+    list_for_each_entry(data, &self->data_list, list) {
+        for(int i=PL_MIN; i<PL_MAX; ++i) {
+            if (strcmp(data->linename, ina226_lines[i].linename) == 0){
+                printf("%ld,", data->power.diff_value);
+                pl_power_sum += data->power.diff_value;
+            }
         }
     }
 
@@ -252,13 +253,21 @@ struct list_head *sensors_ina226_init() {
         }        
     }
     */
+    // make sure it prints PS and PL rails nicely grouped
     list_for_each_entry(data, &s->data_list, list) {
-        for(int i=0; i<PL_MAX; ++i) {
+        for(int i=PS_MIN; i<PS_MAX; ++i) {
             if (strcmp(data->linename, ina226_lines[i].linename) == 0){
                 printf("%s,", ina226_lines[i].railname);
             }
         }
     }
+    list_for_each_entry(data, &s->data_list, list) {
+        for(int i=PL_MIN; i<PL_MAX; ++i) {
+            if (strcmp(data->linename, ina226_lines[i].linename) == 0){
+                printf("%s,", ina226_lines[i].railname);
+            }
+        }
+    }    
     //PS power: from VCCPSINTFP to VCCPSDDRPLL, == PS_MIN to PS_MAX
     //PL power: from     VCCINT to MGTAVTT, == PL_MIN to PL_MAX
     printf("total_ps_power, total_pl_power,total_power\n");
