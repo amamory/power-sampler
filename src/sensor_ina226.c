@@ -173,8 +173,8 @@ void sensor_ina226_print_last(struct sensor *sself) {
     struct ina226_data *data;
     long current_sum __attribute((unused)) = 0;
     long voltage_sum __attribute((unused)) = 0;
-    long ps_power_sum = 0;
-    long pl_power_sum = 0;
+    double ps_power_sum = 0;
+    double pl_power_sum = 0;
 
     // this is used to get the board total power, dividing it by PS and PL power
     // the loops are duplicated such that the rail columns are nicely grouped, i.e, 1st all PS rails and then all the PL rails
@@ -182,7 +182,7 @@ void sensor_ina226_print_last(struct sensor *sself) {
         for(int i=PS_MIN; i<PS_MAX; ++i) {
             if (strcmp(data->linename, ina226_lines[i].linename) == 0){
                 printf("%ld,", data->power.diff_value);
-                ps_power_sum += data->power.diff_value;
+                ps_power_sum += (double)data->power.diff_value;
             }
         }
     }
@@ -190,10 +190,13 @@ void sensor_ina226_print_last(struct sensor *sself) {
         for(int i=PL_MIN; i<PL_MAX; ++i) {
             if (strcmp(data->linename, ina226_lines[i].linename) == 0){
                 printf("%ld,", data->power.diff_value);
-                pl_power_sum += data->power.diff_value;
+                pl_power_sum += (double)data->power.diff_value;
             }
         }
     }
+    // convert uW to W
+    ps_power_sum /= 1000000.0;
+    pl_power_sum /= 1000000.0;
 
     /* print only the power lines of interest, which are:
         VCCINT - the main power line for the PL part. includes LUTs, DSPs, clocks, 
@@ -215,7 +218,7 @@ void sensor_ina226_print_last(struct sensor *sself) {
     // printf("%s_uV %ld\n", self->base.name, voltage_sum * 1000L);
     // printf("%s_uW %ld\n", self->base.name, power_sum);
     // printf("%s_CALC_uW %ld\n", self->base.name, power_calc_sum);
-    printf("%ld,%ld,%ld,", ps_power_sum, pl_power_sum, ps_power_sum + pl_power_sum);
+    printf("%g,%g,%g,", ps_power_sum, pl_power_sum, ps_power_sum + pl_power_sum);
 }
 
 // =========================================================
