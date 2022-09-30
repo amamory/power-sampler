@@ -270,7 +270,7 @@ struct list_head *sensors_ina226_init() {
     }    
     //PS power: from VCCPSINTFP to VCCPSDDRPLL, == PS_MIN to PS_MAX
     //PL power: from     VCCINT to MGTAVTT, == PL_MIN to PL_MAX
-    printf("total_ps_power, total_pl_power,total_power\n");
+    printf("total_ps_power,total_pl_power,total_power\n");
 
     return list;
 }
