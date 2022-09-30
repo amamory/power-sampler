@@ -181,9 +181,9 @@ void sensor_ina226_print_last(struct sensor *sself) {
     list_for_each_entry(data, &self->data_list, list) {
         // current_sum += data->current.diff_value;
         // voltage_sum += data->voltage.diff_value;
-        //power += data->power.diff_value;
         // power_calc_sum += data->current.diff_value * data->voltage.diff_value;
 
+        printf("%ld,", data->power.diff_value);
         if (data->rail >= PS_MIN && data->rail <= PS_MAX){
             ps_power_sum += data->power.diff_value;
         }else if(data->rail >= PL_MIN && data->rail <= PL_MAX){
@@ -261,7 +261,7 @@ struct list_head *sensors_ina226_init() {
     }
     //PS power: from VCCPSINTFP to VCCPSDDRPLL, == PS_MIN to PS_MAX
     //PL power: from     VCCINT to MGTAVTT, == PL_MIN to PL_MAX
-    printf("total_ps_power, total_pl_power,\n");
+    printf("total_ps_power, total_pl_power,total_power\n");
 
     return list;
 }
